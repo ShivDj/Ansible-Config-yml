@@ -1,0 +1,13 @@
+[Unit]
+Description=django daemon
+After=network.target
+
+[Service]
+User=ubuntu
+#Group=www-data
+WorkingDirectory=/home/ubuntu/Chatapp
+#Environment=/home/ubuntu/new_chatapp source venv/bin/activate
+ExecStart=/usr/bin/python3 /home/ubuntu/Chatapp/fundoo/manage.py runserver 0.0.0.0:8000
+[Install]
+WantedBy=multi-user.target
+

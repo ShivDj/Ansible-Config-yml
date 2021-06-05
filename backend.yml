@@ -1,0 +1,54 @@
+--- 
+- 
+  become: true
+  connection: ssh
+  hosts: server1
+  tasks: 
+    - 
+      apt: "update_cache=yes force_apt_get=yes cache_valid_time=3600"
+      name: "Update apt-get repo and cache"
+    - 
+      apt: 
+        name: python3-pip
+      name: "install python3-pip"
+    - 
+      become: true
+      name: " install pymql"
+      shell: "sudo pip3 install PyMySQL"
+    - 
+      apt: 
+        name: python-dev
+      name: "install python-dev"
+    - 
+      apt: "update_cache=yes force_apt_get=yes cache_valid_time=3600"
+      name: "Update apt-get repo and cache"
+    - 
+      git: 
+        dest: /home/ubuntu/Chatapp
+        repo: "https://github.com/ShivDj/ChatApp.git"
+      name: "git clone"
+    - 
+      name: "Install specified python requirements in indicated (virtualenv)"
+      pip: 
+        requirements: /home/ubuntu/Chatapp/requirements.txt
+        state: present
+
+    - 
+      copy: 
+        dest: /etc/systemd/system/
+        src: /home/ubuntu/chatapp.service
+      name: " Deamon process chatapp.service copy"
+    - 
+      become: true
+      name: "command for daemon-reload"
+      shell: "sudo systemctl daemon-reload"
+    - 
+      become: true
+      name: "commad for start django"
+      shell: "sudo systemctl start chatapp.service"
+    - 
+      become: true
+      name: "command for enable django service"
+      shell: "sudo systemctl enable chatapp.service"
+  user: ubuntu
+

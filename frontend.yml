@@ -1,0 +1,45 @@
+--- 
+- 
+  become: true
+  connection: ssh
+  hosts: server2
+  user: ubuntu
+  tasks: 
+    - 
+      name: "install nginx"
+      apt: 
+        name: 
+          - nginx
+        state: latest
+    - 
+      name: "start nginx"
+      service: 
+        name: nginx
+        state: started
+    - 
+      file: 
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      name: "Ansible delete file example"
+    - 
+      file: 
+        path: /etc/nginx/sites-available/default
+        state: absent
+      name: "Ansible delete file example"
+    - 
+      copy: 
+        dest: /etc/nginx/sites-enabled/chatapp
+        src: /home/ubuntu/chatapp
+      name: "copy nginx chatapp"
+    - 
+      become: true
+      name: "link nginx site enable and available"
+      shell: "sudo ln -s /etc/nginx/sites-enabled/chatapp /etc/nginx/sites-available/"
+    - 
+      name: "start nginx"
+      service:
+        name: nginx
+        state: started
+
+  
+  user: ubuntu
